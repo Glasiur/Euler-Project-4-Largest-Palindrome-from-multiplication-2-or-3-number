@@ -57,8 +57,10 @@ int iterate_negative_3_factors(int lim,int i,int j,int max_k_decrement,int *max_
 
 int adjusted_square_root(int lim,int max_factor){
     int root=sqrt(lim);
-    if(root+1>max_factor) return max_factor;
-    else if(root*root==lim) return root;
+    if(root>max_factor) 
+        return max_factor;
+    else if(root*root==lim) 
+        return root;
     return root+1;
 }
 
