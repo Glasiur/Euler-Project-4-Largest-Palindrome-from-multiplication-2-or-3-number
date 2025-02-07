@@ -4,7 +4,8 @@
 
 #define ENABLE_DEBUG_LOGS 0
 #define ENABLE_RESULT_LOGS 0
-
+#define ENABLE_STATISTIC_LOGS 1
+#define ENABLE_TEST_LOGS 0
 
 #if ENABLE_DEBUG_LOGS
 #define log_debug(...) printf(__VA_ARGS__)
@@ -17,6 +18,19 @@
 #else
 #define log_result(...)
 #endif
+
+#if ENABLE_STATISTIC_LOGS
+#define log_statistic(...) printf(__VA_ARGS__)
+#else
+#define log_statistic(...)
+#endif
+
+#if ENABLE_TEST_LOGS
+#define log_test(...) printf(__VA_ARGS__)
+#else
+#define log_test(...)
+#endif
+
 
 
 int is_palindrome(int number){
@@ -159,7 +173,7 @@ int get_palindrome_candidate(int lim,int max_factor,int search_strategy_id,int *
     return palindrome;
 }
 
-void run_palindrome_tests(int max_factor,int n_factor){
+void run_palindrome_tests(int max_factor,int n_factor,int brute_force){
     int max_iteration_count=0;
     int worst_lim=0;
     int error_count=0;
@@ -177,17 +191,19 @@ void run_palindrome_tests(int max_factor,int n_factor){
         for(int lim=max_lim ;lim>=0; lim--){
             int current_iterations=0;
             int palindrome=get_palindrome_candidate(lim,max_factor,n_factor,&current_iterations);
-            int test_iterations=0;
-            int test_palindrome=get_palindrome_candidate(lim,max_factor,n_factor*2,&test_iterations);
-            
-            if(palindrome!=test_palindrome){
-                local_errors++;
+            if (brute_force){
+                int bf_iteration=0;
+                int bf_palindrome=get_palindrome_candidate(lim,max_factor,n_factor*2,&bf_iteration);
+                if(palindrome!=bf_palindrome){
+                    local_errors++;
+                }
             }
             if(current_iterations>local_max_iterations){
                 local_max_iterations=current_iterations;
                 local_worst_limit=lim;
             }
             local_total_iterations+=current_iterations;
+            log_statistic("%d,%d,%d,\n",lim,palindrome,current_iterations);
         }
 
         #pragma omp critical
@@ -201,13 +217,13 @@ void run_palindrome_tests(int max_factor,int n_factor){
         }
     }
 
-    printf("pal_from_%d_factor max_factor=%d max_ite=%d worst_lim=%d moy_ite=%llu error=%d\n",
+    log_test("pal_from_%d_factor max_factor=%d max_ite=%d worst_lim=%d moy_ite=%llu error=%d\n",
            n_factor,max_factor,max_iteration_count,worst_lim,total_iterations/(max_lim),error_count);
 }
 
 int main(){
-    run_palindrome_tests(99,2);//lim,number factor
-    run_palindrome_tests(99,3);
-    run_palindrome_tests(999,2);
+    //run_palindrome_tests(99,2,0);//lim,number factor
+    run_palindrome_tests(99,3,0);
+    //run_palindrome_tests(999,2,0);
     return 0;
 }
