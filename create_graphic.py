@@ -10,7 +10,7 @@ x = [int(line[1]) for line in tab]
 max_pal = [int(line[2]) for line in tab]
 iteration = [int(line[3]) for line in tab]
 sqrt_or_cbrt_x = [int(line[4]) for line in tab]
-start = [int(line[4])**3 for line in tab]  # cbrt
+start = [int(line[4])**3 for line in tab]  # cbrt rtttt 
 
 # Traitement dynamique des étapes
 steps_x = []
