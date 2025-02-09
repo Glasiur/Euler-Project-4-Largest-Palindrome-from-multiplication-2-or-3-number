@@ -32,7 +32,7 @@
 #endif
 
 
-
+//_______________________________________________________________________________________________________
 int is_palindrome(int number){
     int original=number;
     int reversed_number=0;
@@ -52,6 +52,7 @@ int iterate_positive_3_factors(int lim,int i,int j,int min_k_increment,int *max_
             min_k_increment=k;
         else if(is_palindrome(product)){
             log_debug("%di %dj %dk %dproduct %diteration_count ++ \n",i,j,k,product,*iteration_count);
+            log_statistic(";%d",product);
             *max_pal=product;
         }
     }
@@ -67,6 +68,7 @@ int iterate_negative_3_factors(int lim,int i,int j,int max_k_decrement,int *max_
             max_k_decrement=k;
         else if(is_palindrome(product)){
             log_debug("%di %dj %dk %dproduct %diteration_count -- \n",i,j,k,product,*iteration_count);
+            log_statistic(";%d",product);
             *max_pal=product;
         }
     }
@@ -97,7 +99,7 @@ int research_optimized_two_factors(int lim,int max_factor,int *iteration_count){
         iterate_negative_3_factors(lim,1,j,sqrt_lim,&max_pal,iteration_count,j);//--
     }
     log_debug("%diteration_count1 \n",*iteration_count);
-    log_result("%d best palindrome for lim=%d in research1\n",max_pal,lim);
+    log_result("%d best palindrome for lim=%d in research_optimized_two_factors\n",max_pal,lim);
     return max_pal;
 }
 
@@ -122,9 +124,10 @@ int research_optimized_three_factors(int lim,int max_factor,int *iteration_count
         }
     }
     log_debug("%diteration_count2 \n",*iteration_count);
-    log_result("%d best palindrome for lim=%d in research2\n",max_pal,lim);
+    log_result("%d best palindrome for lim=%d in research_optimized_three_factors\n",max_pal,lim);
     return max_pal;
 }
+//_______________________________________________________________________________________________________
 
 int research_brute_force_two_factors(int lim,int max_factor,int *iteration_count){
     int max_pal=0;
@@ -161,6 +164,7 @@ int research_brute_force_three_factors(int lim,int max_factor,int *iteration_cou
     return max_pal;
 }
 
+//_______________________________________________________________________________________________________
 
 int get_palindrome_candidate(int lim,int max_factor,int search_strategy_id,int *iteration_count){
     int palindrome=0;
@@ -172,8 +176,8 @@ int get_palindrome_candidate(int lim,int max_factor,int search_strategy_id,int *
     }
     return palindrome;
 }
-
-void run_palindrome_tests(int max_factor,int n_factor,int brute_force){
+//_______________________________________________________________________________________________________
+void run_palindrome_tests_multithread(int max_factor,int n_factor,int brute_force){
     int max_iteration_count=0;
     int worst_lim=0;
     int error_count=0;
@@ -203,7 +207,8 @@ void run_palindrome_tests(int max_factor,int n_factor,int brute_force){
                 local_worst_limit=lim;
             }
             local_total_iterations+=current_iterations;
-            log_statistic("%d,%d,%d,\n",lim,palindrome,current_iterations);
+            
+            log_statistic(",%d,%d,%d,%d,\n",lim,palindrome,current_iterations,adjusted_cube_root(lim,max_factor));//cube or square
         }
 
         #pragma omp critical
@@ -220,10 +225,43 @@ void run_palindrome_tests(int max_factor,int n_factor,int brute_force){
     log_test("pal_from_%d_factor max_factor=%d max_ite=%d worst_lim=%d moy_ite=%llu error=%d\n",
            n_factor,max_factor,max_iteration_count,worst_lim,total_iterations/(max_lim),error_count);
 }
+void run_palindrome_tests_monothread(int max_factor,int n_factor,int brute_force){
+    int max_iteration_count=0;
+    int worst_lim=0;
+    int error_count=0;
+    unsigned long long int total_iterations=0;
+    int max_lim=pow(max_factor,n_factor)+1;
+
+    for(int lim=max_lim ;lim>=0; lim--){
+        int current_iterations=0;
+        int palindrome=get_palindrome_candidate(lim,max_factor,n_factor,&current_iterations);
+        if (brute_force){
+            int bf_iteration=0;
+            int bf_palindrome=get_palindrome_candidate(lim,max_factor,n_factor*2,&bf_iteration);
+            if(palindrome!=bf_palindrome){
+                error_count++;
+            }
+        }
+        if(current_iterations>max_iteration_count){
+            max_iteration_count=current_iterations;
+            worst_lim=lim;
+        }
+        total_iterations+=current_iterations;
+        
+        log_statistic(",%d,%d,%d,%d,\n",lim,palindrome,current_iterations,adjusted_cube_root(lim,max_factor));//cube or square
+    }
+}
+
+//_______________________________________________________________________________________________________
+
+void run_palindrome_tests(int max_factor,int n_factor,int brute_force,int multi_threading){
+    multi_threading ? run_palindrome_tests_multithread(max_factor,n_factor,brute_force) : run_palindrome_tests_monothread(max_factor,n_factor,brute_force) ;
+}
+//_______________________________________________________________________________________________________
 
 int main(){
-    //run_palindrome_tests(99,2,0);//lim,number factor
-    run_palindrome_tests(99,3,0);
-    //run_palindrome_tests(999,2,0);
+    //run_palindrome_tests(99,2,0,0);//lim,number factor
+    //run_palindrome_tests(99,3,0,0);
+    run_palindrome_tests(999,2,0,0);
     return 0;
 }

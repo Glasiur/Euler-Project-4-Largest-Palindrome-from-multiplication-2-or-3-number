@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <math.h>
 
-#define ENABLE_DEBUG_LOGS 0
-#define ENABLE_RESULT_LOGS 0
+#define ENABLE_DEBUG_LOGS 1
+#define ENABLE_RESULT_LOGS 1
 
 
 #if ENABLE_DEBUG_LOGS
@@ -113,10 +113,10 @@ int research_optimized_three_factors(int lim,int max_factor,int *iteration_count
 
 int main(void){
     int c=0;
-    research_optimized_two_factors(10000,99,c);
+    research_optimized_two_factors(10000,99,&c);
     c=0;
-    research_optimized_three_factors(10000,99,c);
+    research_optimized_three_factors(400000,99,&c);
     c=0;
-    research_optimized_two_factors(10000,99,c);
-
+    research_optimized_two_factors(10000,99,&c);
+    return 0;
 }

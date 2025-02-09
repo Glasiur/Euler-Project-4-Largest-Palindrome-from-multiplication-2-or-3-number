@@ -11,12 +11,6 @@
 #define log_debug(...)
 #endif
 
-#if ENABLE_RESULT_LOGS
-#define log_result(...) printf(__VA_ARGS__)
-#else
-#define log_result(...)
-#endif
-
 
 int is_palindrome(int number){
     int original=number;
@@ -35,7 +29,6 @@ int iterate_positive_3_factors(int lim,int i,int j,int min_k_increment,int *max_
         if(product<=*max_pal)
             min_k_increment=k;
         else if(is_palindrome(product)){
-            log_debug("%di %dj %dk %dproduct ++ \n",i,j,k,product);
             *max_pal=product;
         }
     }
@@ -48,7 +41,6 @@ int iterate_negative_3_factors(int lim,int i,int j,int max_k_decrement,int *max_
         if(product>=lim)
             max_k_decrement=k;
         else if(is_palindrome(product)){
-            log_debug("%di %dj %dk %dproduct -- \n",i,j,k,product);
             *max_pal=product;
         }
     }
