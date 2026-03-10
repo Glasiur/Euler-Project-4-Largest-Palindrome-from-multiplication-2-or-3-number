@@ -2,3 +2,8 @@
 .vscode/tasks.json
 a
 test_solution.c
+3_factor_res
+.gitignore
+out
+create_result
+pal_3_factor_test
