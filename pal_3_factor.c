@@ -4,11 +4,6 @@
 #define ENABLE_DEBUG_LOGS 1
 #define ENABLE_RESULT_LOGS 1
 
-#if ENABLE_DEBUG_LOGS
-#define log_debug(...) printf(__VA_ARGS__)
-#else
-#define log_debug(...)
-#endif
 
 
 int is_palindrome(int number){
