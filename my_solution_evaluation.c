@@ -261,7 +261,7 @@ void run_palindrome_tests(int max_factor,int n_factor,int brute_force,int multi_
 
 int main(){
     //run_palindrome_tests(99,2,0,0);//lim,number factor
-    //run_palindrome_tests(99,3,0,0);
-    run_palindrome_tests(999,2,0,0);
+    run_palindrome_tests(99,3,1,0);
+    //run_palindrome_tests(999,2,0,0);
     return 0;
 }

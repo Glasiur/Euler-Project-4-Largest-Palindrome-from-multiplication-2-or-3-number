@@ -54,8 +54,10 @@ int research_optimized_three_factors_3(int lim,int max_factor,int *iteration_cou
     int sbrt_lim=adjusted_cube_root_3(lim,max_factor);
     int min_j_increment=sbrt_lim;
     for(int i=max_factor; i*max_factor*max_factor>max_pal; i--){
+        (*iteration_count)++;
         int max_k_decrement=min_j_increment;
         for(int j=min_j_increment; j<=max_factor && i*j*sbrt_lim<lim; j++){
+            (*iteration_count)++;
             if(i*j*j<lim) 
                 max_k_decrement=j;
             if(i*j*j<max_pal) 
@@ -65,6 +67,7 @@ int research_optimized_three_factors_3(int lim,int max_factor,int *iteration_cou
         }
         int min_k_increment=sbrt_lim;
         for(int j=sbrt_lim; j>=i && i*j*max_factor>max_pal; j--){
+            (*iteration_count)++;
             min_k_increment=iterate_positive_3_factors_3(lim,i,j,min_k_increment,&max_pal,max_factor,iteration_count);//--+
             iterate_negative_3_factors_3(lim,i,j,sbrt_lim,&max_pal,j,iteration_count);//---
         }
