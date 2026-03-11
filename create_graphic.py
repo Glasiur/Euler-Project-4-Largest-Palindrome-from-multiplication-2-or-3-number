@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 # Chargement et traitement des données
-with open("stat") as brut:
+with open("data") as brut:
     tab = [line.split(',')[0:-1] for line in brut]
 #tab.sort(key= lambda x: x[1])
 

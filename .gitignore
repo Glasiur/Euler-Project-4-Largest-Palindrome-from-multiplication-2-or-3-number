@@ -2,3 +2,5 @@
 .vscode/tasks.json
 a
 test_solution.c
+data
+out
