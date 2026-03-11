@@ -1,16 +1,16 @@
 #include "pal_3_factor_test.h"
 
 
-int is_palindrome_3(int number){
-    if (number%10==0 ) return 0;
-    int original=number;
-    int reversed_number=0;
-    while(number>=1){
-        reversed_number*=10;
-        reversed_number+=number%10;
-        number=number/10;
+int is_palindrome_3(int number) {
+    if (number < 0) return 0;
+    if (number % 10 == 0) return number == 0; // 0 est palindrome, mais les multiples de 10 non sauf 0
+    int reversed = 0;
+    while (number > reversed) {
+        reversed = reversed * 10 + number % 10;
+        number /= 10;
     }
-    return reversed_number==original;
+    // Si le nombre a un nombre impair de chiffres, on ignore le chiffre du milieu
+    return number == reversed || number == reversed / 10;
 }
 
 int adjusted_cube_root_3(int lim,int max_factor){
@@ -40,7 +40,7 @@ void iterate_negative_3_factors_3(int lim,int i,int j,int start_k_decrement,int 
     for(int k=start_k_decrement; k*i*j>*max_pal && k>=min ; k--){
         (*iteration_count)++;
         int product=k*i*j;
-        if(is_palindrome_3(product) && product<lim){
+        if(is_palindrome_3(product) ){//&& product<lim si erreur 
             *max_pal=product;
         }
     }
