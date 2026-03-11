@@ -56,7 +56,7 @@ int research_optimized_three_factors_3(int lim,int max_factor,int *iteration_cou
     int start_j_increment=sbrt_lim;
     for(int i=max_factor; i*max_factor*max_factor>max_pal; i--){//- mais par de mf
         (*iteration_count)++;
-        for(int j=start_j_increment; j<=max_factor && i*j*sbrt_lim<lim && i*max_factor*max_factor>max_pal; j++){
+        for(int j=start_j_increment; j<=max_factor && i*j*sbrt_lim<lim ; j++){//&& i*max_factor*max_factor>max_pal pas très utilr car ici ca monte bcp
             (*iteration_count)++;
 
             int start_k_decrement;
@@ -76,8 +76,12 @@ int research_optimized_three_factors_3(int lim,int max_factor,int *iteration_cou
         for(int j=sbrt_lim; j>=i && i*j*max_factor>max_pal && i*i*i<lim ; j--){//--
             (*iteration_count)++;
 
-
+            int start_k_decrement=(lim-1)/(i*j); 
+            start_k_decrement= start_k_decrement>max_factor ? max_factor : start_k_decrement;//--+ car si le start_k_decrement est plus grand que max_factor, on le limite à max_factor pour éviter de dépasser les limites du problème
+            iterate_negative_3_factors_3(lim,i,j,start_k_decrement,&max_pal,sbrt_lim,iteration_count);//--+ 
             start_k_increment=iterate_positive_3_factors_3(lim,i,j,start_k_increment,&max_pal,max_factor,iteration_count);//--+
+
+
             //if (i*j*j<lim)peu utile
             iterate_negative_3_factors_3(lim,i,j,sbrt_lim,&max_pal,j,iteration_count);//---
         }
