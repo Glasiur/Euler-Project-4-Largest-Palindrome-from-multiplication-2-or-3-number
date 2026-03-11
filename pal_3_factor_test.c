@@ -56,7 +56,7 @@ int research_optimized_three_factors_3(int lim,int max_factor,int *iteration_cou
     int start_j_increment=sbrt_lim;
     for(int i=max_factor; i*max_factor*max_factor>max_pal; i--){//- mais par de mf
         (*iteration_count)++;
-        for(int j=start_j_increment; j<=max_factor && i*j*sbrt_lim<lim; j++){
+        for(int j=start_j_increment; j<=max_factor && i*j*sbrt_lim<lim && i*max_factor*j>max_pal; j++){
             (*iteration_count)++;
 
             int start_k_decrement;
@@ -73,7 +73,7 @@ int research_optimized_three_factors_3(int lim,int max_factor,int *iteration_cou
 
         int start_k_increment=sbrt_lim;//-- car i va que descendre et j aussi donc k doit monter pour compenser et trouver des produits plus grands que max_pal
 
-        for(int j=sbrt_lim; j>=i && i*j*max_factor>max_pal ; j--){//--
+        for(int j=sbrt_lim; j>=i && i*j*max_factor>max_pal && i*i*i<lim ; j--){//--
             (*iteration_count)++;
 
 
