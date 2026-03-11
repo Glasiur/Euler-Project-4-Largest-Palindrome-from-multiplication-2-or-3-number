@@ -5,3 +5,9 @@ This repository contains the necessary tools to test the optimization and validi
 compilation : gcc x -o out -lm -fopenmp
 
 compilation : gcc test_solution.cx -o out -lm -fopenmp -pal_3_factor.c
+
+compilation : gcc test_solution_3_factor.c pal_3_factor.c -o out -lm -fopenmp 
+
+gcc test_solution_3_factor.c pal_3_factor_test.c -o out -lm -fopenmp 
+
+max_ite=11669 worst_lim=168861 moy_ite=2619 error=0 with pal_3_factor_test

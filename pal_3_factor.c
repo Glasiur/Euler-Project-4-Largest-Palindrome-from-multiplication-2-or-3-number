@@ -2,6 +2,7 @@
 
 
 int is_palindrome_3(int number){
+    if (number%10==0 ) return 0;
     int original=number;
     int reversed_number=0;
     while(number>=1){
@@ -10,34 +11,6 @@ int is_palindrome_3(int number){
         number=number/10;
     }
     return reversed_number==original;
-}
-
-
-int iterate_positive_3_factors_3(int lim,int i,int j,int min_k_increment,int *max_pal,int max_factor,int *iteration_count){
-    for(int k=min_k_increment; k<=max_factor && i*j*k<lim ; k++){
-        (*iteration_count)++;
-        int product=i*j*k;
-        if(product<=*max_pal)
-            min_k_increment=k;
-        else if(is_palindrome_3(product)){
-            *max_pal=product;
-        }
-    }
-    return min_k_increment;
-}
-
-
-int iterate_negative_3_factors_3(int lim,int i,int j,int max_k_decrement,int *max_pal,int max_factor,int *iteration_count){
-    for(int k=max_k_decrement; k*i*j>*max_pal && k>=max_factor ; k--){
-        (*iteration_count)++;
-        int product=k*i*j;
-        if(product>=lim)
-            max_k_decrement=k;
-        else if(is_palindrome_3(product)){
-            *max_pal=product;
-        }
-    }
-    return max_k_decrement;
 }
 
 int adjusted_cube_root_3(int lim,int max_factor){
@@ -49,23 +22,54 @@ int adjusted_cube_root_3(int lim,int max_factor){
     return root+1;
 }
 
+int iterate_positive_3_factors_3(int lim,int i,int j,int init_k_increment,int *max_pal,int max,int *iteration_count){
+    for(int k=init_k_increment; k<=max && i*j*k<lim ; k++){
+        (*iteration_count)++;
+        int product=i*j*k;
+        if(product<=*max_pal)
+            init_k_increment=k;
+        else if(is_palindrome_3(product)){
+            *max_pal=product;
+        }
+    }
+    return init_k_increment;
+}
+
+
+int iterate_negative_3_factors_3(int lim,int i,int j,int init_k_decrement,int *max_pal,int min,int *iteration_count){
+    for(int k=init_k_decrement; k*i*j>*max_pal && k>=min ; k--){
+        (*iteration_count)++;
+        int product=k*i*j;
+        if(product>=lim)
+            init_k_decrement=k;
+        else if(is_palindrome_3(product)){
+            *max_pal=product;
+        }
+    }
+    return init_k_decrement;
+}
+
+
+
 int research_optimized_three_factors_3(int lim,int max_factor,int *iteration_count){
     int max_pal=0;
     int sbrt_lim=adjusted_cube_root_3(lim,max_factor);
-    int min_j_increment=sbrt_lim;
+    int init_j_increment=sbrt_lim;
     for(int i=max_factor; i*max_factor*max_factor>max_pal; i--){
-        int max_k_decrement=min_j_increment;
-        for(int j=min_j_increment; j<=max_factor && i*j*sbrt_lim<lim; j++){
-            if(i*j*j<lim) 
-                max_k_decrement=j;
-            if(i*j*j<max_pal) 
-                min_j_increment=j;
-            else 
-                max_k_decrement=iterate_negative_3_factors_3(lim,i,j,max_k_decrement,&max_pal,sbrt_lim,iteration_count);//-++
+        (*iteration_count)++;
+        int init_k_decrement=init_j_increment;//initla sbrt_lim
+        for(int j=init_j_increment; j<=max_factor && i*j*sbrt_lim<lim; j++){//-+
+            (*iteration_count)++;
+            if(i*j*j<lim) // eviter le doublon k*j et j*k si j monte a mf et k descend de mf ainsi que respecter le -+- 
+                init_k_decrement=j;
+            if(i*j*j<max_pal) // k pas plus grand que j
+                init_j_increment=j;
+            init_k_decrement=iterate_negative_3_factors_3(lim,i,j,init_k_decrement,&max_pal,sbrt_lim,iteration_count);//-++car tt au dessus de sbrt_lim, descend de mf a sbrt_lim et utilsation de iteration negative car permet de mieux cibler la plage utilse avec >max_pal pour sur
         }
-        int min_k_increment=sbrt_lim;
-        for(int j=sbrt_lim; j>=i && i*j*max_factor>max_pal; j--){
-            min_k_increment=iterate_positive_3_factors_3(lim,i,j,min_k_increment,&max_pal,max_factor,iteration_count);//--+
+        int init_k_increment=sbrt_lim;
+        for(int j=sbrt_lim; j>=i && i*j*max_factor>max_pal; j--){//--
+            (*iteration_count)++;
+            init_k_increment=iterate_positive_3_factors_3(lim,i,j,init_k_increment,&max_pal,max_factor,iteration_count);//--+
             iterate_negative_3_factors_3(lim,i,j,sbrt_lim,&max_pal,j,iteration_count);//---
         }
     }
@@ -103,7 +107,7 @@ int research___optimized_three_factors_(int lim, int max_factor, int *iteration_
         }
 
         // --- ZONE 2 : j descend ---
-        int min_k_increment = sbrt_lim;
+        int init_k_increment = sbrt_lim;
         for (int j = sbrt_lim; j >= i && i * j * i < lim; j--) {
             // Si i*j*max_factor est plus petit que max_pal, on peut break la boucle j
             if (i * j * max_factor <= max_pal) break; 
@@ -114,7 +118,7 @@ int research___optimized_three_factors_(int lim, int max_factor, int *iteration_
             int k_limit = (lim - 1) / (i * j);
             if (k_limit > max_factor) k_limit = max_factor;
 
-            min_k_increment = iterate_positive_3_factors_3(lim, i, j, min_k_increment, &max_pal, iteration_count, k_limit);
+            init_k_increment = iterate_positive_3_factors_3(lim, i, j, init_k_increment, &max_pal, iteration_count, k_limit);
             iterate_negative_3_factors_3(lim, i, j, sbrt_lim, &max_pal, iteration_count, j);
         }
     }
