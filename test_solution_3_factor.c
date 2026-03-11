@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <omp.h>
-#include "pal_3_factor.h"
+#include "pal_3_factor_test.h"
+//#include "pal_3_factor.h"
 
 
 #define ENABLE_STATISTIC_LOGS 0

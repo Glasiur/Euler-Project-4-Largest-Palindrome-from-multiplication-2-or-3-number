@@ -54,7 +54,7 @@ int research_optimized_three_factors_3(int lim,int max_factor,int *iteration_cou
     int max_pal=0;
     int sbrt_lim=adjusted_cube_root_3(lim,max_factor);
     int start_j_increment=sbrt_lim;
-    for(int i=max_factor; i*max_factor*max_factor>max_pal; i--){
+    for(int i=max_factor; i*max_factor*max_factor>max_pal; i--){//- mais par de mf
         (*iteration_count)++;
         for(int j=start_j_increment; j<=max_factor && i*j*sbrt_lim<lim; j++){
             (*iteration_count)++;
@@ -71,14 +71,14 @@ int research_optimized_three_factors_3(int lim,int max_factor,int *iteration_cou
                 start_j_increment=j;// monte au dessus de sbrt_lim et i va que descendre 
         }
 
-        int start_k_increment=sbrt_lim;
+        int start_k_increment=sbrt_lim;//-- car i va que descendre et j aussi donc k doit monter pour compenser et trouver des produits plus grands que max_pal
 
-        for(int j=sbrt_lim; j>=i && i*j*max_factor>max_pal; j--){
+        for(int j=sbrt_lim; j>=i && i*j*max_factor>max_pal ; j--){//--
             (*iteration_count)++;
 
 
             start_k_increment=iterate_positive_3_factors_3(lim,i,j,start_k_increment,&max_pal,max_factor,iteration_count);//--+
-            
+            //if (i*j*j<lim)peu utile
             iterate_negative_3_factors_3(lim,i,j,sbrt_lim,&max_pal,j,iteration_count);//---
         }
     }
