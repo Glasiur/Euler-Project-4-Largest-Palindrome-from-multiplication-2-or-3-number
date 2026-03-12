@@ -37,7 +37,7 @@ int iterate_positive_3_factors_3(int lim,int i,int j,int start_k_increment,int *
 
 
 void iterate_negative_3_factors_3(int lim,int i,int j,int start_k_decrement,int *max_pal,int min, int *iteration_count){
-    for(int k=start_k_decrement; k*i*j>*max_pal && k>=min ; k--){
+    for(int k=start_k_decrement; k>=min && k*i*j>*max_pal; k--){
         (*iteration_count)++;
         int product=k*i*j;
         if(is_palindrome_3(product) ){//&& product<lim si erreur 
@@ -54,9 +54,10 @@ int research_optimized_three_factors_3(int lim,int max_factor,int *iteration_cou
     int max_pal=0;
     int sbrt_lim=adjusted_cube_root_3(lim,max_factor);
     int start_j_increment=sbrt_lim;
-    for(int i=max_factor; i*max_factor*max_factor>max_pal; i--){//- mais par de mf
+    for(int i=sbrt_lim; i*max_factor*max_factor>max_pal; i--){//- mais par de mf(ca marce de sbrt wtf)
         (*iteration_count)++;
-        if (!(i*i*i>lim)){
+        if (!(i*i*i>lim)){//
+            
             for(int j=start_j_increment; j<=max_factor && i*j*sbrt_lim<lim ; j++){//&& i*max_factor*max_factor>max_pal pas très utilr car ici ca monte bcp
                 (*iteration_count)++;
 
@@ -69,7 +70,7 @@ int research_optimized_three_factors_3(int lim,int max_factor,int *iteration_cou
 
             int start_k_increment=sbrt_lim;//-- car i va que descendre et j aussi donc k doit monter pour compenser et trouver des produits plus grands que max_pal
 
-            for(int j=sbrt_lim; j>=i && i*j*max_factor>max_pal && i*i*i<lim ; j--){//--
+            for(int j=sbrt_lim; j>=i && i*j*max_factor>max_pal; j--){//--
                 (*iteration_count)++;
 
                 int k_limite=(lim-1)/(i*j); 
