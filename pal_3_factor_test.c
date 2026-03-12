@@ -56,30 +56,32 @@ int research_optimized_three_factors_3(int lim,int max_factor,int *iteration_cou
     int start_j_increment=sbrt_lim;
     for(int i=max_factor; i*max_factor*max_factor>max_pal; i--){//- mais par de mf
         (*iteration_count)++;
-        for(int j=start_j_increment; j<=max_factor && i*j*sbrt_lim<lim ; j++){//&& i*max_factor*max_factor>max_pal pas très utilr car ici ca monte bcp
-            (*iteration_count)++;
+        if (!(i*i*i>lim)){
+            for(int j=start_j_increment; j<=max_factor && i*j*sbrt_lim<lim ; j++){//&& i*max_factor*max_factor>max_pal pas très utilr car ici ca monte bcp
+                (*iteration_count)++;
 
-            int start_k_decrement =i*j*j<lim ? j : (lim-1)/(i*j);//--+ car si i*j*j est plus petit que lim, on peut utiliser start_k_decrement tel quel, sinon on le limite à j pour éviter de dépasser les limites du problème
-            iterate_negative_3_factors_3(lim,i,j,start_k_decrement,&max_pal,sbrt_lim,iteration_count);//-++ car tt au dessus de sbrt_lim, descend de mf a sbrt_lim et utilsationde iteration negative car permet de mieux cibler la plage utilse avec >max_pal pour sur
-            
-            if(i*j*j<max_pal) // k pas plus grand que j
-                start_j_increment=j;// monte au dessus de sbrt_lim et i va que descendre 
-        }
+                int start_k_decrement =i*j*j<lim ? j : (lim-1)/(i*j);//--+ car si i*j*j est plus petit que lim, on peut utiliser start_k_decrement tel quel, sinon on le limite à j pour éviter de dépasser les limites du problème
+                iterate_negative_3_factors_3(lim,i,j,start_k_decrement,&max_pal,sbrt_lim,iteration_count);//-++ car tt au dessus de sbrt_lim, descend de mf a sbrt_lim et utilsationde iteration negative car permet de mieux cibler la plage utilse avec >max_pal pour sur
+                
+                if(i*j*j<max_pal) // k pas plus grand que j
+                    start_j_increment=j;// monte au dessus de sbrt_lim et i va que descendre 
+            }
 
-        int start_k_increment=sbrt_lim;//-- car i va que descendre et j aussi donc k doit monter pour compenser et trouver des produits plus grands que max_pal
+            int start_k_increment=sbrt_lim;//-- car i va que descendre et j aussi donc k doit monter pour compenser et trouver des produits plus grands que max_pal
 
-        for(int j=sbrt_lim; j>=i && i*j*max_factor>max_pal && i*i*i<lim ; j--){//--
-            (*iteration_count)++;
+            for(int j=sbrt_lim; j>=i && i*j*max_factor>max_pal && i*i*i<lim ; j--){//--
+                (*iteration_count)++;
 
-            int k_limite=(lim-1)/(i*j); 
+                int k_limite=(lim-1)/(i*j); 
 
-            int start_k_decrement= k_limite>max_factor ? max_factor : k_limite;//--+ car si le start_k_decrement est plus grand que max_factor, on le limite à max_factor pour éviter de dépasser les limites du problème
-            
-            iterate_negative_3_factors_3(lim,i,j,start_k_decrement,&max_pal,sbrt_lim,iteration_count);//--+ utilise decrement pour optimisation
+                int start_k_decrement= k_limite>max_factor ? max_factor : k_limite;//--+ car si le start_k_decrement est plus grand que max_factor, on le limite à max_factor pour éviter de dépasser les limites du problème
+                
+                iterate_negative_3_factors_3(lim,i,j,start_k_decrement,&max_pal,sbrt_lim,iteration_count);//--+ utilise decrement pour optimisation
 
-            start_k_decrement= k_limite>sbrt_lim ? sbrt_lim : k_limite;//--- 
- 
-            iterate_negative_3_factors_3(lim,i,j,start_k_decrement,&max_pal,j,iteration_count);//---
+                start_k_decrement= k_limite>sbrt_lim ? sbrt_lim : k_limite;//--- 
+    
+                iterate_negative_3_factors_3(lim,i,j,start_k_decrement,&max_pal,j,iteration_count);//---
+            }
         }
     }
     return max_pal;
